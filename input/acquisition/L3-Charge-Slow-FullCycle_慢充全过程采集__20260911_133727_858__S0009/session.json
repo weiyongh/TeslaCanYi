@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "exported_clock": "2026-09-11T13:47:05.268+08:00",
+  "app_version": "0.2.0",
+  "session": {
+    "session_id": "S0009",
+    "source_script_name": "L3-Charge-Slow-FullCycle_慢充全过程采集.txt",
+    "start_clock": "2026-09-11T13:37:27.858+08:00",
+    "start_clock_epoch_ms": 1789105047858,
+    "end_clock": "2026-09-11T13:46:28.001+08:00",
+    "end_clock_epoch_ms": 1789105588001,
+    "end_script_time_us": 540142380,
+    "status": "COMPLETED",
+    "end_reason": "NATURAL_OR_USER_COMPLETION",
+    "script_time_source": "ELAPSED_REALTIME",
+    "script_time_unit": "us",
+    "clock_precision": "ms"
+  },
+  "events": [
+    {
+      "event_id": "E01",
+      "event_sequence": 1,
+      "action": "开始采集",
+      "action_detail": "立即启动CAN数据记录\n保持车辆无操作，拍摄未连接初始状态\n前往充电口准备取枪",
+      "plan_time_s": 0,
+      "status": "triggered",
+      "trigger_script_time_us": 67531,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E02",
+      "event_sequence": 2,
+      "action": "开充电小门",
+      "action_detail": "正常打开充电口盖，暂不插枪",
+      "plan_time_s": 40,
+      "status": "triggered",
+      "trigger_script_time_us": 40040689,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E03",
+      "event_sequence": 3,
+      "action": "插枪",
+      "action_detail": "插枪到位后暂不扫码\n插枪异常时暂停并记录，不反复拔插",
+      "plan_time_s": 60,
+      "status": "triggered",
+      "trigger_script_time_us": 60037427,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E04",
+      "event_sequence": 4,
+      "action": "记录连接状态",
+      "action_detail": "进入驾驶舱，拍摄车辆端已连接但尚未充电的页面\n车辆未识别连接时暂停并记录，不继续扫码",
+      "plan_time_s": 100,
+      "status": "triggered",
+      "trigger_script_time_us": 100061487,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E05",
+      "event_sequence": 5,
+      "action": "扫码启动",
+      "action_detail": "前往充电桩，使用微信扫码启动充电\n充电开始且桩屏仍亮时，拍摄电压、电流和功率\n登录、授权或付款耗时较长时暂停，不追赶计划时间\n启动失败时暂停并记录页面提示",
+      "plan_time_s": 160,
+      "status": "triggered",
+      "trigger_script_time_us": 160021915,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E06",
+      "event_sequence": 6,
+      "action": "记录充电数据1",
+      "action_detail": "进入驾驶舱，拍摄车辆端当前充电页面\n随即保存微信小程序当前充电页面\n确保充电状态、功率、SOC及小程序电压、电流、功率清晰可见\n小程序未显示更新时间时，备注“实时性未知”\n尚未开始充电时暂停并记录页面提示",
+      "plan_time_s": 240,
+      "status": "triggered",
+      "trigger_script_time_us": 240096062,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E07",
+      "event_sequence": 7,
+      "action": "记录充电数据2",
+      "action_detail": "再次拍摄车辆端当前充电页面\n随即再次保存微信小程序当前充电页面\n确保充电状态、功率、SOC及小程序电压、电流、功率清晰可见\n小程序未显示更新时间时，备注“实时性未知”",
+      "plan_time_s": 320,
+      "status": "triggered",
+      "trigger_script_time_us": 320073024,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E08",
+      "event_sequence": 8,
+      "action": "停止充电",
+      "action_detail": "通过车机屏幕正常停止充电\n拍摄停止后仍连接的车辆端页面\n停止失败时暂停并记录页面提示",
+      "plan_time_s": 380,
+      "status": "triggered",
+      "trigger_script_time_us": 380101571,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E09",
+      "event_sequence": 9,
+      "action": "解锁充电枪",
+      "action_detail": "使用现场正常方式解锁充电枪\n已经自动解锁时确认释放，不重复操作\n无法解锁时暂停，不强行操作",
+      "plan_time_s": 440,
+      "status": "triggered",
+      "trigger_script_time_us": 440055300,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E10",
+      "event_sequence": 10,
+      "action": "拔枪",
+      "action_detail": "确认充电枪已经释放后拔枪\n未释放时暂停，不强行拔枪\n拔枪后进入驾驶舱，拍摄车辆端未连接、未充电页面",
+      "plan_time_s": 470,
+      "status": "triggered",
+      "trigger_script_time_us": 470103160,
+      "skip_script_time_us": null
+    },
+    {
+      "event_id": "E11",
+      "event_sequence": 11,
+      "action": "结束采集",
+      "action_detail": "停止CAN数据记录并保存ASC\n结束VoiceRunner本轮并保存全部现场记录",
+      "plan_time_s": 540,
+      "status": "triggered",
+      "trigger_script_time_us": 540097573,
+      "skip_script_time_us": null
+    }
+  ],
+  "photos": [
+    {
+      "photo_id": "E03-P01",
+      "event_id": "E03",
+      "photo_sequence": 1,
+      "captured_clock": "2026-09-11T13:39:07.626+08:00",
+      "captured_script_time_us": 99768238,
+      "file_name": "E03-P01_插枪_20260911_133907_626.jpg",
+      "content_uri": "content://media/external/downloads/1000003424",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E05-P01",
+      "event_id": "E05",
+      "photo_sequence": 1,
+      "captured_clock": "2026-09-11T13:40:42.388+08:00",
+      "captured_script_time_us": 194529877,
+      "file_name": "E05-P01_扫码启动_20260911_134042_388.jpg",
+      "content_uri": "content://media/external/downloads/1000003425",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E05-P02",
+      "event_id": "E05",
+      "photo_sequence": 2,
+      "captured_clock": "2026-09-11T13:40:50.424+08:00",
+      "captured_script_time_us": 202566047,
+      "file_name": "E05-P02_扫码启动_20260911_134050_424.jpg",
+      "content_uri": "content://media/external/downloads/1000003426",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E05-P03",
+      "event_id": "E05",
+      "photo_sequence": 3,
+      "captured_clock": "2026-09-11T13:41:27.933+08:00",
+      "captured_script_time_us": 240075395,
+      "file_name": "E05-P03_扫码启动_20260911_134127_933.jpg",
+      "content_uri": "content://media/external/downloads/1000003427",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E06-P01",
+      "event_id": "E06",
+      "photo_sequence": 1,
+      "captured_clock": "2026-09-11T13:41:33.171+08:00",
+      "captured_script_time_us": 245313180,
+      "file_name": "E06-P01_记录充电数据1_20260911_134133_171.jpg",
+      "content_uri": "content://media/external/downloads/1000003428",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E06-P02",
+      "event_id": "E06",
+      "photo_sequence": 2,
+      "captured_clock": "2026-09-11T13:42:49.787+08:00",
+      "captured_script_time_us": 321929122,
+      "file_name": "E06-P02_记录充电数据1_20260911_134249_787.jpg",
+      "content_uri": "content://media/external/downloads/1000003429",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E07-P01",
+      "event_id": "E07",
+      "photo_sequence": 1,
+      "captured_clock": "2026-09-11T13:42:55.656+08:00",
+      "captured_script_time_us": 327798103,
+      "file_name": "E07-P01_记录充电数据2_20260911_134255_656.jpg",
+      "content_uri": "content://media/external/downloads/1000003430",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E08-P01",
+      "event_id": "E08",
+      "photo_sequence": 1,
+      "captured_clock": "2026-09-11T13:43:56.019+08:00",
+      "captured_script_time_us": 388160549,
+      "file_name": "E08-P01_停止充电_20260911_134356_019.jpg",
+      "content_uri": "content://media/external/downloads/1000003431",
+      "file_status": "AVAILABLE"
+    },
+    {
+      "photo_id": "E08-P02",
+      "event_id": "E08",
+      "photo_sequence": 2,
+      "captured_clock": "2026-09-11T13:44:01.541+08:00",
+      "captured_script_time_us": 393683131,
+      "file_name": "E08-P02_停止充电_20260911_134401_541.jpg",
+      "content_uri": "content://media/external/downloads/1000003432",
+      "file_status": "AVAILABLE"
+    }
+  ],
+  "notes": [],
+  "audio_recording": {
+    "enabled": false,
+    "status": "DISABLED",
+    "file_name": null,
+    "content_uri": null,
+    "request_clock": null,
+    "request_offset_us": null,
+    "start_clock": null,
+    "start_offset_us": null,
+    "start_method": null,
+    "start_accuracy_us": null,
+    "end_clock": null,
+    "end_script_time_us": null,
+    "duration_us": null,
+    "sample_rate_hz": null,
+    "channel_count": null,
+    "mime_type": null,
+    "bit_rate": null,
+    "end_reason": null,
+    "failure_clock": null,
+    "failure_script_time_us": null,
+    "failure_reason": null
+  }
+}

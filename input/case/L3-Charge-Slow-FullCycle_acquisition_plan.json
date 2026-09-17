@@ -1,0 +1,116 @@
+{
+  "schema_version": "acquisition-plan-v1",
+  "case_id": "L3-Charge-Slow-FullCycle",
+  "contract_ref": "doc/L3采集Case/交流慢充/L3-Charge-Slow-FullCycle_Case契约.md",
+  "events": [
+    {
+      "planned_time_s": 0,
+      "title": "开始采集",
+      "instruction_lines": [
+        "立即启动CAN数据记录",
+        "保持车辆无操作，拍摄未连接初始状态",
+        "前往充电口准备取枪"
+      ],
+      "or_refs": ["OR-01.1"]
+    },
+    {
+      "planned_time_s": 40,
+      "title": "开充电小门",
+      "instruction_lines": [
+        "正常打开充电口盖，暂不插枪"
+      ],
+      "or_refs": []
+    },
+    {
+      "planned_time_s": 60,
+      "title": "插枪",
+      "instruction_lines": [
+        "插枪到位后暂不扫码",
+        "插枪异常时暂停并记录，不反复拔插"
+      ],
+      "or_refs": ["OR-01.2"]
+    },
+    {
+      "planned_time_s": 100,
+      "title": "记录连接状态",
+      "instruction_lines": [
+        "进入驾驶舱，拍摄车辆端已连接但尚未充电的页面",
+        "车辆未识别连接时暂停并记录，不继续扫码"
+      ],
+      "or_refs": ["OR-02.1"]
+    },
+    {
+      "planned_time_s": 160,
+      "title": "扫码启动",
+      "instruction_lines": [
+        "前往充电桩，使用微信扫码启动充电",
+        "充电开始且桩屏仍亮时，拍摄电压、电流和功率",
+        "登录、授权或付款耗时较长时暂停，不追赶计划时间",
+        "启动失败时暂停并记录页面提示"
+      ],
+      "or_refs": ["OR-02.2", "OR-03.2"]
+    },
+    {
+      "planned_time_s": 240,
+      "title": "记录充电数据1",
+      "instruction_lines": [
+        "进入驾驶舱，拍摄车辆端当前充电页面",
+        "随即保存微信小程序当前充电页面",
+        "确保充电状态、功率、SOC及小程序电压、电流、功率清晰可见",
+        "小程序未显示更新时间时，备注“实时性未知”",
+        "尚未开始充电时暂停并记录页面提示"
+      ],
+      "or_refs": ["OR-03.1", "OR-04.1", "OR-04.2", "OR-05.1", "OR-05.2"]
+    },
+    {
+      "planned_time_s": 320,
+      "title": "记录充电数据2",
+      "instruction_lines": [
+        "再次拍摄车辆端当前充电页面",
+        "随即再次保存微信小程序当前充电页面",
+        "确保充电状态、功率、SOC及小程序电压、电流、功率清晰可见",
+        "小程序未显示更新时间时，备注“实时性未知”"
+      ],
+      "or_refs": ["OR-06.1", "OR-06.2"]
+    },
+    {
+      "planned_time_s": 380,
+      "title": "停止充电",
+      "instruction_lines": [
+        "通过车机屏幕正常停止充电",
+        "拍摄停止后仍连接的车辆端页面",
+        "停止失败时暂停并记录页面提示"
+      ],
+      "or_refs": ["OR-07.1", "OR-07.2"]
+    },
+    {
+      "planned_time_s": 440,
+      "title": "解锁充电枪",
+      "instruction_lines": [
+        "使用现场正常方式解锁充电枪",
+        "已经自动解锁时确认释放，不重复操作",
+        "无法解锁时暂停，不强行操作"
+      ],
+      "or_refs": ["OR-07.2"]
+    },
+    {
+      "planned_time_s": 470,
+      "title": "拔枪",
+      "instruction_lines": [
+        "确认充电枪已经释放后拔枪",
+        "未释放时暂停，不强行拔枪",
+        "拔枪后进入驾驶舱，拍摄车辆端未连接、未充电页面"
+      ],
+      "or_refs": ["OR-07.3"]
+    },
+    {
+      "planned_time_s": 540,
+      "title": "结束采集",
+      "instruction_lines": [
+        "停止CAN数据记录并保存ASC",
+        "结束VoiceRunner本轮并保存全部现场记录"
+      ],
+      "or_refs": []
+    }
+  ]
+}

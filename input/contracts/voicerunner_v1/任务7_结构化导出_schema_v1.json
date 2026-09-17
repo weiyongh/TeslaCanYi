@@ -1,0 +1,689 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CANVoiceRunner Session Collection Record",
+  "description": "CANVoiceRunner V2 单个采集 Session 的结构化导出格式。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "exported_clock",
+    "app_version",
+    "session",
+    "events",
+    "photos",
+    "notes",
+    "audio_recording"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "description": "Schema 主版本。"
+    },
+    "mock_data": {
+      "type": "boolean",
+      "description": "仅 Mock 使用；正式采集文件可省略或设为 false。"
+    },
+    "exported_clock": {
+      "$ref": "#/$defs/clock"
+    },
+    "app_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session": {
+      "$ref": "#/$defs/session"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/photo"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/note"
+      }
+    },
+    "audio_recording": {
+      "$ref": "#/$defs/audio_recording"
+    }
+  },
+  "$defs": {
+    "clock": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 Clock，必须包含日期、毫秒和时区。",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "nullable_clock": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/clock"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullable_non_negative_integer": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "nullable_integer": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "nullable_string": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "source_script_name",
+        "start_clock",
+        "start_clock_epoch_ms",
+        "end_clock",
+        "end_clock_epoch_ms",
+        "end_script_time_us",
+        "status",
+        "end_reason",
+        "script_time_source",
+        "script_time_unit",
+        "clock_precision"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "pattern": "^S[0-9]+$"
+        },
+        "source_script_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "start_clock": {
+          "$ref": "#/$defs/clock"
+        },
+        "start_clock_epoch_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_clock": {
+          "$ref": "#/$defs/clock"
+        },
+        "end_clock_epoch_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_script_time_us": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "COMPLETED",
+            "ABORTED",
+            "FAILED"
+          ]
+        },
+        "end_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "script_time_source": {
+          "const": "ELAPSED_REALTIME"
+        },
+        "script_time_unit": {
+          "const": "us"
+        },
+        "clock_precision": {
+          "const": "ms"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "event_sequence",
+        "action",
+        "action_detail",
+        "plan_time_s",
+        "status",
+        "trigger_script_time_us",
+        "skip_script_time_us"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "pattern": "^E[0-9]+$"
+        },
+        "event_sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_detail": {
+          "type": "string"
+        },
+        "plan_time_s": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "triggered",
+            "skipped"
+          ]
+        },
+        "trigger_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "skip_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "triggered"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "trigger_script_time_us": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "skipped"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "trigger_script_time_us": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "skip_script_time_us": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "photo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "photo_id",
+        "event_id",
+        "photo_sequence",
+        "captured_clock",
+        "captured_script_time_us",
+        "file_name",
+        "content_uri",
+        "file_status"
+      ],
+      "properties": {
+        "photo_id": {
+          "type": "string",
+          "pattern": "^E[0-9]+-P[0-9]+$"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^E[0-9]+$"
+        },
+        "photo_sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "captured_clock": {
+          "$ref": "#/$defs/clock"
+        },
+        "captured_script_time_us": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_status": {
+          "enum": [
+            "AVAILABLE",
+            "UNAVAILABLE"
+          ]
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "note_id",
+        "target_type",
+        "target_id",
+        "text",
+        "created_clock",
+        "created_script_time_us",
+        "updated_clock",
+        "updated_script_time_us",
+        "deleted",
+        "deleted_clock",
+        "deleted_script_time_us"
+      ],
+      "properties": {
+        "note_id": {
+          "type": "string",
+          "pattern": "^N[0-9]+$"
+        },
+        "target_type": {
+          "enum": [
+            "EVENT",
+            "PHOTO"
+          ]
+        },
+        "target_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_clock": {
+          "$ref": "#/$defs/clock"
+        },
+        "created_script_time_us": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updated_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "updated_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "deleted_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "deleted_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "target_type": {
+                "const": "EVENT"
+              }
+            },
+            "required": [
+              "target_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_id": {
+                "pattern": "^E[0-9]+$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "target_id": {
+                "pattern": "^E[0-9]+-P[0-9]+$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "deleted"
+            ]
+          },
+          "then": {
+            "properties": {
+              "deleted_clock": {
+                "$ref": "#/$defs/clock"
+              },
+              "deleted_script_time_us": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "deleted_clock": {
+                "type": "null"
+              },
+              "deleted_script_time_us": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "updated_clock": {
+                  "type": "null"
+                },
+                "updated_script_time_us": {
+                  "type": "null"
+                }
+              }
+            },
+            {
+              "properties": {
+                "updated_clock": {
+                  "$ref": "#/$defs/clock"
+                },
+                "updated_script_time_us": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "audio_recording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "status",
+        "file_name",
+        "content_uri",
+        "request_clock",
+        "request_offset_us",
+        "start_clock",
+        "start_offset_us",
+        "start_method",
+        "start_accuracy_us",
+        "end_clock",
+        "end_script_time_us",
+        "duration_us",
+        "sample_rate_hz",
+        "channel_count",
+        "mime_type",
+        "bit_rate",
+        "end_reason",
+        "failure_clock",
+        "failure_script_time_us",
+        "failure_reason"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "DISABLED",
+            "PREPARING",
+            "RECORDING",
+            "SAVED",
+            "FAILED",
+            "SAVE_FAILED"
+          ]
+        },
+        "file_name": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "content_uri": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "request_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "request_offset_us": {
+          "$ref": "#/$defs/nullable_integer"
+        },
+        "start_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "start_offset_us": {
+          "$ref": "#/$defs/nullable_integer"
+        },
+        "start_method": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "AUDIO_TIMESTAMP_BOOTTIME",
+            "TIMESTAMP_UNAVAILABLE",
+            null
+          ]
+        },
+        "start_accuracy_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "end_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "end_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "duration_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "sample_rate_hz": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "channel_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "mime_type": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "bit_rate": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "end_reason": {
+          "$ref": "#/$defs/nullable_string"
+        },
+        "failure_clock": {
+          "$ref": "#/$defs/nullable_clock"
+        },
+        "failure_script_time_us": {
+          "$ref": "#/$defs/nullable_non_negative_integer"
+        },
+        "failure_reason": {
+          "$ref": "#/$defs/nullable_string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": false
+              }
+            },
+            "required": [
+              "enabled"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "DISABLED"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "status": {
+                "not": {
+                  "const": "DISABLED"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "SAVED"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "file_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "content_uri": {
+                "type": "string",
+                "minLength": 1
+              },
+              "start_clock": {
+                "$ref": "#/$defs/clock"
+              },
+              "end_clock": {
+                "$ref": "#/$defs/clock"
+              },
+              "end_script_time_us": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "duration_us": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "sample_rate_hz": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "channel_count": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "mime_type": {
+                "type": "string",
+                "minLength": 1
+              },
+              "bit_rate": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "start_method": {
+                "const": "AUDIO_TIMESTAMP_BOOTTIME"
+              }
+            },
+            "required": [
+              "start_method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "start_offset_us": {
+                "type": "integer"
+              },
+              "start_accuracy_us": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "start_method": {
+                "const": "TIMESTAMP_UNAVAILABLE"
+              }
+            },
+            "required": [
+              "start_method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "start_offset_us": {
+                "type": "null"
+              },
+              "start_accuracy_us": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
