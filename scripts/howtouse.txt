@@ -1,0 +1,6 @@
+cd /Users/hwy/Downloads/bourne
+python3 scripts/archive_large_assets.py \
+  --root . \
+  --output-dir /Users/hwy/Downloads/windows_transfer \
+  --min-size-mb 1 \
+  --delete-source-after-verify
